@@ -4,6 +4,8 @@ resource "azurerm_service_plan" "app_plan" {
   location           = var.location
   os_type            = "Linux"
   sku_name           = var.sku_name
+
+  tags = var.tags
 }
 
 resource "azurerm_linux_web_app" "app" {
@@ -16,12 +18,15 @@ resource "azurerm_linux_web_app" "app" {
     application_stack {
       python_version = "3.9"
     }
+    always_on = true
+    app_command_line = "python -m uvicorn main:app --host 0.0.0.0"
   }
 
   app_settings = {
     "SCM_DO_BUILD_DURING_DEPLOYMENT" = "true"
     "WEBSITE_PORT"                   = "8000"
     "ENVIRONMENT"                    = var.environment
+    "PYTHONPATH"                     = "/home/site/wwwroot"
   }
 
   tags = var.tags

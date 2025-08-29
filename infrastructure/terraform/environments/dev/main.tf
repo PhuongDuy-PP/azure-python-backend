@@ -8,7 +8,7 @@ terraform {
   
   backend "azurerm" {
     resource_group_name  = "terraform-state-rg"
-    storage_account_name = "tfstate${random_string.storage_account_suffix.result}"
+    storage_account_name = "tfstatec5cded22"
     container_name       = "tfstate"
     key                 = "dev.terraform.tfstate"
   }
@@ -18,19 +18,14 @@ provider "azurerm" {
   features {}
 }
 
-resource "random_string" "storage_account_suffix" {
-  length  = 8
-  special = false
-  upper   = false
-}
-
+# Create a resource group
 resource "azurerm_resource_group" "rg" {
   name     = "${var.project_name}-${var.environment}-rg"
   location = var.location
-  
-  tags = local.tags
+  tags     = local.tags
 }
 
+# Create App Service resources
 module "app_service" {
   source = "../../modules/app_service"
 
